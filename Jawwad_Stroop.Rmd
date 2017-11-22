@@ -1,0 +1,144 @@
+---
+title: "Stroop_Effect"
+author: "Syed Jawwad"
+date: "5 October 2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## What is the Stroop Effect?
+
+In a Stroop effect test, participants are given a list of words, with each word displayed in a color of ink. The participant's task is to say out loud the color of the ink in which the word is printed. The task has two conditions: a congruent words condition, and an incongruent words condition. In the congruent words condition, the words being displayed are color words whose names match the colors in which they are printed. In the incongruent words condition, the words displayed are color words whose names do not match the colors in which they are printe. We measure the time it takes to name the ink colors in equally-sized lists. The fact that it takes more time for a person to read aloud the incongruent words than the congruent words is called the Stroop Effect.
+
+## Question 1
+### What are the dependant and independant variables?
+
+The dependant variable is the time taken to say out loud, the color of the ink in which the word is printed.
+
+And the independant variable is the word condition, ie. whether the words are presented in congruent or incongruent condition.
+
+## Question 2
+### What is an appropriate set of hypotheses for this task? What kind of statistical test do you expect to perform? Justify your choices.
+
+From a choise of z-test and t-test, i will perform a t- test. This is due to several reasons such as, I was given a sample set of data and not the whole population. The size of the data is 24. If it were at least 30, the sample would fit the normal distribution curve and a Z test could be used. Also, since we have the mean and standard dviation, I will use the T- test. 
+
+The sample distribution is void of outliers and normally distributed so it is okay to use t-test on it.
+
+We will perform a two tail test debause each of the sample has been tested twice. Alos, we are only concerned with finding whether there is a significant difference between congruent and incongruent means.
+
+And a 95% confidence level will be used to check whether there is a difference between both the means when the alpha level is 0.05.
+
+**Null hypothesis** states that there won't be any significant change in the mean of 
+test timing of congruent and incongruent test takers.
+
+$$ H_0 : \mu_c - \mu_i = 0 $$
+
+**Alternative hypothesis** states that there will be significant change in the mean of test timming of  congruent and incongruent test takers. Thus, greter time is taken due to mismatch in color and word.
+
+$$ H_a : \mu_c - \mu_i \neq 0$$
+
+## Question 3
+### Report some descriptive statistics regarding this dataset. Include at least one measure of central tendency and at least one measure of variability.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+stroop = read.csv('stroopdata.csv')
+summary(stroop)
+```
+Above, the data set has been read, dataframe created, and a summary of the sataset printed. 
+
+The minimum and maximum value of the congruent data are smaller than that of incongruent data.
+Also more importantly, the meand and median value of the congruent data are also smaller than that of incongruent data.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+print ("Standard deviation")
+sapply(stroop, sd, na.rm = TRUE)
+```
+
+Above, we have the Standard Deviations of the data. This shows the Variability.
+
+## Question 4
+### Provide one or two visualizations that show the distribution of the sample data. Write one or two sentences noting what you observe about the plot or plots.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(gridExtra)
+
+p1<-ggplot(aes(Congruent),data=stroop)+
+  geom_histogram(binwidth = 2,color="darkblue", fill="lightblue")+
+  scale_x_continuous(breaks = seq(0,24,2))+
+  ggtitle("Cngruent values")
+
+p2<-ggplot(aes(Incongruent),data=stroop)+
+  geom_histogram(binwidth = 2,color="darkblue", fill="lightblue")+
+  scale_x_continuous(breaks = seq(0,40,2))+
+  ggtitle("Noncongruent values")
+
+grid.arrange(p1,p2,ncol=2)
+```
+
+The histograms help us read the data easily. We can see that the congruent data is similar to a  bimodal distributin.
+Also, there are some missing values between 28 to 32 in incongruent data. What this suggests is that there are some outliers in the data.
+The outliers will be exposed with the use of a box-plot.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+p1 = ggplot(aes(x = "", y = time(seconds)), data = stroop) + 
+  geom_boxplot(aes(y = stroop$Congruent)) + xlab('Congruent')+
+ ggtitle('Congruent sample')
+p2 = ggplot(aes(x = "", y = time(seconds)), data = stroop) + 
+  geom_boxplot(aes(y = stroop$Incongruent))+ 
+ ggtitle('Incongruent sample') + xlab('Incongruent')
+grid.arrange(p1,p2, ncol =2)
+```
+
+We can compare the range of values, median and all the quartile values between the two samples 
+from their boxplots.
+Also, there are two outliers in the incongruent dataset.
+
+## Question 5
+### What is your confidence level and your critical statistic value? Do you reject the null hypothesis or fail to reject it? Come to a conclusion in terms of the experiment task. Did the results match up with your expectations?
+
+Test is two tailed paired t test for p = 0.05, the values after calculation are:
+ 
+ - t critical (t*) = 2.069 for df(23)
+ - SD of the differences = 4.86
+ - SEM = 0.99
+ - t value =  -8.03
+
+Therefore we can **reject the null hypothesis** as T falls within the t-critical region. We can assume the results were not down to chance, and that participants who had words under the incongruent condition had a longer recall time.
+
+The 95 per cent confidence interval lies between -10.02(LL) to -5.92(UL). This means that on an average the mean time taken by the congruent recitation will be 10.02 to 5.92 lesser than the incongruent.
+
+The 'p; value is less than 0.0001,
+
+And finally, the Cohen's 'd' is -1.64, and R^2 is .74
+
+With the above results we can establish the existance of the Stroop Effect.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
